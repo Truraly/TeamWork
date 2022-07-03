@@ -13,19 +13,22 @@ public class PlayerController : MonoBehaviour
 
     public float speed, jumpForce;
     private float horizontalmove;
+    //是否在地面，是否正在受到伤害，是否正在攻击
     private bool isGround,isHurt,isAttacking;
 
 
     public float attackCoolDown,attackTime;
     private float attackTimeLeft, lastAttack;
+
     void Start()
     {
         
     }
-
+    //
     // Update is called once per frame
     void Update()
     {
+        //按下了G键
         if (Input.GetKeyDown(KeyCode.G))
         {
             if (Time.time >= (lastAttack + attackCoolDown))
@@ -39,6 +42,8 @@ public class PlayerController : MonoBehaviour
         SwitchAnim();
     }
 
+
+    //移动函数，用于左右移动
     void Movement()
     {
         anim.SetFloat("running", 0);
@@ -56,6 +61,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //
     void Jump()
     {
         if (rb.IsTouchingLayers(Ground) && Input.GetKey(KeyCode.F))
@@ -64,8 +70,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //动作切换函数
     void SwitchAnim()
     {
+        //idle空闲
+        //fall掉落
+        //jump跳跃
+        //run跑
         anim.SetBool("idleing", false);
         if (rb.velocity.y < 0.1f && !coll.IsTouchingLayers(Ground))
         {
@@ -96,6 +107,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //撞到触发器
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Collection")
@@ -116,8 +128,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //受到攻击并被击退
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        //
         if (collision.gameObject.tag == "Damage")
         {
             rb.velocity = new Vector3(-50, 0, 0);
@@ -125,8 +139,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+    //趴下动作函数，按键C
     void Crouch()
     {
+        
         if (Input.GetKey(KeyCode.C))
         {
                 anim.SetBool("crouching", true);
@@ -134,8 +151,11 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-                anim.SetBool("crouching", false);
+            if (Input.GetButtonUp("Crouch"))
+            {
+                anim.SetBool("Crouching", false);
                 disColl.enabled = true;
+            }
         }
     }
 
